@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { Board } from './board.model';
 import { BoardStatus } from './board-status.enum';
 import { BoardsService } from './boards.service';
@@ -25,5 +33,10 @@ export class BoardsController {
     @Body('status', BoardStatusValidationPipe) status: BoardStatus,
   ): Board {
     return this.boardsService.updateBoardStatus(id, status);
+  }
+
+  @Delete('/:id')
+  deleteBoard(@Param() id: string) {
+    return this.boardsService.deleteBoard(id);
   }
 }
