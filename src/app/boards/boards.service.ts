@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { v1 as uuid } from 'uuid';
 
-import { Board, BoardStatus } from './board.model';
+import { Board } from './board.model';
+import { BoardStatus } from './board-status.enum';
 import { CreateBoardDto } from './dto/create-board.dto';
 
 @Injectable()
@@ -26,7 +27,11 @@ export class BoardsService {
   }
 
   updateBoardStatus(id: string, status: BoardStatus): Board {
-    const boardIndex = this.boards.findIndex((board: Board) => board.id === id);
+    console.log(id, status);
+    const boardIndex: number = this.boards.findIndex((board: Board) => {
+      return board.id === id;
+    });
+
     this.boards[boardIndex].status = status;
     return this.boards[boardIndex];
   }
