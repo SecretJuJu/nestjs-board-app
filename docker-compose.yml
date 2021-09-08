@@ -1,0 +1,35 @@
+version: '3'
+networks:
+  board-app-backend-network:
+    driver: bridge
+
+services:
+  board-app-psql:
+    networks:
+      - board-app-backend-network
+    image: postgres:latest
+    container_name: board-app-psql
+    volumes:
+      - /usr/local/var/psql:/data/db
+    environment:
+      POSTGRES_USER: '${DB_USER}'
+      POSTGRES_DB: '${DB_NAME}'
+      POSTGRES_PASSWORD: '${DB_PASSWORD}'
+      POSTGRES_INITDB_ARGS: '--encoding=UTF-8'
+
+    restart: 'unless-stopped'
+
+  board-app-backend:
+    networks:
+      - board-app-backend-network
+    container_name: board-app-backend
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    ports:
+      - '3000:3000'
+    depends_on:
+      - board-app-psql
+    restart: 'unless-stopped'
+    links:
+      - board-app-psql
