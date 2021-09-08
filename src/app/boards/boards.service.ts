@@ -24,4 +24,10 @@ export class BoardsService {
     this.boards.push(newBoard);
     return newBoard;
   }
+
+  updateBoardStatus(id: string, status: BoardStatus): Board {
+    const boardIndex = this.boards.findIndex((board: Board) => board.id === id);
+    this.boards[boardIndex].status = status;
+    return this.boards[boardIndex];
+  }
 }
