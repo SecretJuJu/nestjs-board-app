@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { v1 as uuid } from 'uuid';
 
 import { Board } from './board.model';
@@ -14,7 +14,13 @@ export class BoardsService {
   }
 
   getBoardById(id: string): Board {
-    return this.boards.find((board) => id === board.id);
+    const found = this.boards.find((board) => id === board.id);
+
+    if (!found) {
+      throw new NotFoundException();
+    }
+
+    return found;
   }
 
   createBoard(createBoardDto: CreateBoardDto): Board {
@@ -34,6 +40,11 @@ export class BoardsService {
     const boardIndex: number = this.boards.findIndex((board: Board) => {
       return board.id === id;
     });
+
+    if (boardIndex === -1) {
+      throw new NotFoundException();
+    }
+
     try {
       this.boards[boardIndex].status = status;
       return this.boards[boardIndex];
@@ -46,6 +57,11 @@ export class BoardsService {
     const targetBoardIndex: number = this.boards.findIndex(
       (board) => board.id === id,
     );
+
+    if (targetBoardIndex === -1) {
+      throw new NotFoundException();
+    }
+
     try {
       this.boards.splice(targetBoardIndex, 1);
       return true;
