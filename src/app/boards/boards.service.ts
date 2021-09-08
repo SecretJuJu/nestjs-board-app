@@ -35,4 +35,16 @@ export class BoardsService {
     this.boards[boardIndex].status = status;
     return this.boards[boardIndex];
   }
+
+  deleteBoard(id: string): boolean {
+    const targetBoardIndex: number = this.boards.findIndex(
+      (board) => board.id === id,
+    );
+    try {
+      this.boards.splice(targetBoardIndex, 1);
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }
 }

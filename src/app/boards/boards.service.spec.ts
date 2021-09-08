@@ -7,7 +7,7 @@ import { CreateBoardDto } from './dto/create-board.dto';
 
 describe('board service test', () => {
   let boardsService: BoardsService;
-  let updateTargetId: string;
+  let createdBoardId: string;
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [BoardsService],
@@ -26,7 +26,7 @@ describe('board service test', () => {
         description: '1번째 게시물의 description',
       };
       const createdBoard: Board = boardsService.createBoard(newBoard);
-      updateTargetId = createdBoard.id;
+      createdBoardId = createdBoard.id;
       expect(typeof createdBoard.id).toEqual('string');
     });
   });
@@ -40,11 +40,22 @@ describe('board service test', () => {
   describe('update board status', () => {
     it('정상적인 board update status', () => {
       const updatedBoard: Board = boardsService.updateBoardStatus(
-        updateTargetId,
+        createdBoardId,
         BoardStatus.PRIVATE,
       );
 
       expect(updatedBoard.status).toEqual(BoardStatus.PRIVATE);
+    });
+  });
+
+  describe('delete board', () => {
+    it('board delete', async () => {
+      const deleteResult = boardsService.deleteBoard(createdBoardId);
+      expect(deleteResult);
+    });
+    it('없는 id로 board delete', async () => {
+      const deleteResult: boolean = boardsService.deleteBoard('dummy id');
+      expect(!deleteResult);
     });
   });
 });
