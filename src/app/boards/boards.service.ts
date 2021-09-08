@@ -13,6 +13,10 @@ export class BoardsService {
     return this.boards;
   }
 
+  getBoardById(id: string): Board {
+    return this.boards.find((board) => id === board.id);
+  }
+
   createBoard(createBoardDto: CreateBoardDto): Board {
     const { title, description } = createBoardDto;
     const newBoard: Board = {
@@ -27,13 +31,15 @@ export class BoardsService {
   }
 
   updateBoardStatus(id: string, status: BoardStatus): Board {
-    console.log(id, status);
     const boardIndex: number = this.boards.findIndex((board: Board) => {
       return board.id === id;
     });
-
-    this.boards[boardIndex].status = status;
-    return this.boards[boardIndex];
+    try {
+      this.boards[boardIndex].status = status;
+      return this.boards[boardIndex];
+    } catch (err) {
+      return null;
+    }
   }
 
   deleteBoard(id: string): boolean {

@@ -30,7 +30,15 @@ describe('board service test', () => {
       expect(typeof createdBoard.id).toEqual('string');
     });
   });
-  describe('create board 후 다시 get all boards', () => {
+  describe('create board 후 다시 get boards', () => {
+    it('get board by id', async () => {
+      const board: Board = boardsService.getBoardById(createdBoardId);
+      expect(!!board).toBeTruthy();
+    });
+    it('get board by strange id', async () => {
+      const board: Board = boardsService.getBoardById('dummy id');
+      expect(!!board).toBeFalsy();
+    });
     it('get all boards', async () => {
       const boards: Board[] = boardsService.getAllBoards();
       expect(boards.length).toEqual(1);
