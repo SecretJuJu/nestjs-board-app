@@ -44,7 +44,6 @@ describe('board service test', () => {
         BoardStatus.PRIVATE,
       );
 
-      console.log(updatedBoard);
       expect(updatedBoard.status).toEqual(BoardStatus.PRIVATE);
     });
   });
