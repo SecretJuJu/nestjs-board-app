@@ -6,9 +6,7 @@ import { UserRepository } from './user.repository';
 
 @Injectable()
 export class AuthService {
-  constructor(
-    @InjectRepository(UserRepository) private userRepository: UserRepository,
-  ) {}
+  constructor(@InjectRepository(User) private userRepository: UserRepository) {}
   async createUser(createUserDto: CreateUserDto): Promise<User> {
     const newUser: User = await this.userRepository.createUser(createUserDto);
     return newUser;

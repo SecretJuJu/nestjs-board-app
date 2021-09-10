@@ -1,3 +1,4 @@
+import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { BoardStatus } from './board-status.enum';
 import { Board } from './board.model';
@@ -36,8 +37,14 @@ describe('board service test', () => {
       expect(!!board).toBeTruthy();
     });
     it('get board by strange id', async () => {
-      const board: Board = boardsService.getBoardById('dummy id');
-      expect(!!board).toBeFalsy();
+      try {
+        boardsService.getBoardById('dummy id');
+      } catch (err) {
+        if (err instanceof NotFoundException) {
+          expect(true);
+        }
+      }
+      expect(false);
     });
     it('get all boards', async () => {
       const boards: Board[] = boardsService.getAllBoards();
@@ -62,8 +69,14 @@ describe('board service test', () => {
       expect(deleteResult);
     });
     it('없는 id로 board delete', async () => {
-      const deleteResult: boolean = boardsService.deleteBoard('dummy id');
-      expect(!deleteResult);
+      try {
+        boardsService.deleteBoard('dummy id');
+      } catch (err) {
+        if (err instanceof NotFoundException) {
+          expect(true);
+        }
+      }
+      expect(false);
     });
   });
 });
