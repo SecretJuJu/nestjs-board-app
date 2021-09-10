@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { v1 as uuid } from 'uuid';
 
 import { User } from './user.entity';
 import { createHashedPassword } from '../utils/user';
+import { ConflictException } from '@nestjs/common';
 
 const tmpUserInfo = {
   username: 'testuser1',
@@ -17,14 +17,17 @@ class MockUserRepository {
   private users = new Map<string, User>();
   async createUser(createUserDto: CreateUserDto): Promise<User> {
     const { username, password } = createUserDto;
-    const newUserId = uuid();
+
+    if (this.users.get(username) !== undefined) {
+      throw new ConflictException();
+    }
 
     const newUser: User = new User();
-    newUser.id = newUserId;
+    newUser.id = uuid();
     newUser.username = username;
-    newUser.password = await createHashedPassword(password);
+    newUser.password = createHashedPassword(password);
 
-    this.users.set(newUserId, newUser);
+    this.users.set(username, newUser);
 
     return newUser;
   }
@@ -57,6 +60,16 @@ describe('board service test', () => {
       const newUser = await authService.createUser(newUserInfo);
 
       expect(newUser.username).toEqual(tmpUserInfo.username);
+    });
+
+    it('create duplicate username', async () => {
+      try {
+        const newUserInfo: CreateUserDto = tmpUserInfo;
+        await authService.createUser(newUserInfo);
+        expect(true).toBeFalsy();
+      } catch (err) {
+        expect(err instanceof ConflictException).toBeTruthy();
+      }
     });
   });
 });

@@ -3,6 +3,7 @@ import {
   Column,
   Entity,
   Generated,
+  Index,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -13,6 +14,7 @@ export class User extends BaseEntity {
   id: string;
 
   @Column()
+  @Index({ unique: true })
   username: string;
 
   @Column()

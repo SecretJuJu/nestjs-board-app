@@ -1,4 +1,5 @@
 import { EntityRepository, Repository } from 'typeorm';
+import { createHashedPassword } from '../utils/user';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
 
@@ -9,7 +10,7 @@ export class UserRepository extends Repository<User> {
 
     const user = new User();
     user.username = username;
-    user.password = password;
+    user.password = createHashedPassword(password);
 
     await user.save();
 
