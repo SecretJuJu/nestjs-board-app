@@ -5,6 +5,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { v1 as uuid } from 'uuid';
 
 import { User } from './user.entity';
+import { UserRepository } from './user.repository';
 import { createHashedPassword } from '../utils/user';
 import { ConflictException } from '@nestjs/common';
 
@@ -41,7 +42,7 @@ describe('board service test', () => {
       providers: [
         AuthService,
         {
-          provide: getRepositoryToken(User),
+          provide: getRepositoryToken(UserRepository),
           useClass: MockUserRepository,
         },
       ],
