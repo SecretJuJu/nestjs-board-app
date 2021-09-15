@@ -1,22 +1,23 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { createHashedPassword } from '../utils/user';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
-import { UserRepository } from './user.repository';
 
 @Injectable()
 export class UserService {
-  constructor(
-    @InjectRepository(User)
-    private userRepository: UserRepository,
-  ) {}
-
   async createUser(createUserDto: CreateUserDto): Promise<User> {
-    const newUser = await this.userRepository.createUser(createUserDto);
-    return newUser;
+    const { username, password } = createUserDto;
+
+    const user = new User();
+    user.username = username;
+    user.password = createHashedPassword(password);
+
+    await user.save();
+
+    return user;
   }
 
-  async getUserByUsername(username: string): Promise<User> {
-    return await this.userRepository.getUserByUsername(username);
+  async getUserByUsername(username: string) {
+    return await User.findOne({ username: username });
   }
 }
