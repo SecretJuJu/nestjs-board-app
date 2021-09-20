@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { createHashedPassword } from '../utils/user';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
@@ -7,12 +7,19 @@ import { User } from './user.entity';
 export class UserService {
   async createUser(createUserDto: CreateUserDto): Promise<User> {
     const { username, password } = createUserDto;
-
     const user = new User();
-    user.username = username;
-    user.password = createHashedPassword(password);
+    try {
+      user.username = username;
+      user.password = createHashedPassword(password);
 
-    await user.save();
+      await user.save();
+    } catch (err) {
+      if (23505) {
+        throw new ConflictException();
+      } else {
+        throw new Error();
+      }
+    }
 
     return user;
   }

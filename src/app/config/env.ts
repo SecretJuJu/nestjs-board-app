@@ -9,6 +9,7 @@ const enviroment = {
   DB_USER: getEnviroment('DB_USER'),
   DB_PASSWORD: getEnviroment('DB_PASSWORD'),
   DB_NAME: process.env.NODE_ENV === 'test' ? 'test' : getEnviroment('DB_NAME'),
+  JWT_SECRET: getEnviroment('JWT_SECRET'),
 };
 
 export default enviroment;
